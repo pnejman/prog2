@@ -8,10 +8,10 @@ namespace prog2
 {
     class ValueItem
     {
-        public int a { get; set; }
-        public int b { get; set; }
+        public double a { get; set; }
+        public double b { get; set; }
 
-        public ValueItem(int a, int b)
+        public ValueItem(double a, double b)
         {
             this.a = a;
             this.b = b;
@@ -19,22 +19,22 @@ namespace prog2
 
         public void Multiply()
         {
-            a = 999;
+            b = a * b;
         }
 
         public void Divide()
         {
-
+            b = a / b;
         }
 
         public void Power()
         {
-
+            b = Math.Pow(a, b);
         }
 
         public void Substract()
         {
-
+            b = a - b;
         }
 
         public override string ToString()
