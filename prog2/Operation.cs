@@ -11,7 +11,7 @@ namespace prog2
         public OperationType Type { get; private set; }
         public string Label { get; private set; }
 
-        public Operation(OperationType type, string label)
+        public Operation(OperationType type, string label) //the friendly name for label is a good idea, but it can be improved... and, after that improvement, it might turn out that the Operation class is not needed 
         {
             Type = type;
             Label = label;
