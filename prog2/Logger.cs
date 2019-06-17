@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace prog2
 {
+    //with a logger like that, if an app crashes during execution you get no data logged at all
     class Logger
     {
         public List<LogEntry> Log { get; private set; } = new List<LogEntry>();
@@ -21,6 +22,8 @@ namespace prog2
         }
     }
 
+
+    //in general, it is good to have one .cs file per class
     class LogEntry
     {
         public ErrorLevel ErrorLevel { get; private set; }
@@ -46,6 +49,7 @@ namespace prog2
         }
     }
 
+    //same for enums, one file per class is welcome
     enum ErrorLevel
     {
         Info,

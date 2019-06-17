@@ -14,7 +14,7 @@ namespace prog2
     public partial class Form1 : Form
     {
         DataFile DataFile;
-        private bool _fileLoaded = false;
+        private bool _fileLoaded = false; //consistency - howcome you have _ prefix?
         public bool FileLoaded {
             get => _fileLoaded;
             set {
@@ -22,6 +22,8 @@ namespace prog2
                 dataFileBindingSource.ResetCurrentItem();
             }
         }
+
+        //if you have fields which are only assigned once, make them readonly - this will make the intent more obvious and prevent from accidental breaking
         Logger Logger = new Logger();
         List<Operation> operations = new List<Operation>();
         BindingSource dataFileBindingSource = new BindingSource();
@@ -31,6 +33,7 @@ namespace prog2
             InitializeComponent();
             IumericUpDownIterations.Maximum = decimal.MaxValue;
 
+            //+1 point for making the friendly name of the calculation - however, this can be improved :)
             operations.Add(new Operation(OperationType.Divide, "Dzielenie"));
             operations.Add(new Operation(OperationType.Multiply, "Mnożenie"));
             operations.Add(new Operation(OperationType.Power, "Potęgowanie"));
@@ -103,7 +106,8 @@ namespace prog2
         {
             OpenFileDialog ofd = new OpenFileDialog
             {
-                Filter = "XML files (*.xml)|*.xml",
+                Filter = "XML files (*.xml)|*.xml", //magic string should be rather replaced with a private readonly field (especially that it's used more than once)
+                //if you add new supported extension, you need to change in two places
                 InitialDirectory = TextBoxInputFile.Text
             };
 

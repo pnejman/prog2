@@ -13,11 +13,14 @@ namespace prog2
     {
         public string FilePath { get; private set; }
         public BindingList<ValueItem> ValueItems { get; private set; } = new BindingList<ValueItem>();
+
+        //consistency & conventions - lower case for private instance fields
         private XDocument doc;
         private Logger Logger;
 
         public DataFile(string path, Logger logger)
         {
+            //for instance members, use 'this.' notation - it helps identify the statics
             Logger = logger;
             FilePath = path;
 
@@ -34,6 +37,7 @@ namespace prog2
                     }
                     catch
                     {
+                        //in general, it is good to log *what* went wrong, not just 'where' (i.e. include exception details)
                         Logger.LogError($"Error loading item {val}");
                     }
                 }
