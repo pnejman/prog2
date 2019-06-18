@@ -33,7 +33,7 @@
             this.ListBoxContent = new System.Windows.Forms.ListBox();
             this.TextBoxInputFile = new System.Windows.Forms.TextBox();
             this.ButtonBrowse = new System.Windows.Forms.Button();
-            this.ButtoOpen = new System.Windows.Forms.Button();
+            this.ButtonOpen = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -43,9 +43,9 @@
             this.TextBoxLog = new System.Windows.Forms.TextBox();
             this.PanelStartSaveButtons = new System.Windows.Forms.Panel();
             this.ButtonSaveLog = new System.Windows.Forms.Button();
-            this.IumericUpDownIterations = new System.Windows.Forms.NumericUpDown();
+            this.NumericUpDownIterations = new System.Windows.Forms.NumericUpDown();
             this.PanelStartSaveButtons.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.IumericUpDownIterations)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NumericUpDownIterations)).BeginInit();
             this.SuspendLayout();
             // 
             // ComboBoxOperation
@@ -103,16 +103,16 @@
             this.ButtonBrowse.UseVisualStyleBackColor = true;
             this.ButtonBrowse.Click += new System.EventHandler(this.ButtonBrowse_Click);
             // 
-            // ButtoOpen
+            // ButtonOpen
             // 
-            this.ButtoOpen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.ButtoOpen.Location = new System.Drawing.Point(476, 22);
-            this.ButtoOpen.Name = "ButtoOpen";
-            this.ButtoOpen.Size = new System.Drawing.Size(75, 23);
-            this.ButtoOpen.TabIndex = 6;
-            this.ButtoOpen.Text = "Open";
-            this.ButtoOpen.UseVisualStyleBackColor = true;
-            this.ButtoOpen.Click += new System.EventHandler(this.ButtoOpen_Click);
+            this.ButtonOpen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ButtonOpen.Location = new System.Drawing.Point(476, 22);
+            this.ButtonOpen.Name = "ButtonOpen";
+            this.ButtonOpen.Size = new System.Drawing.Size(75, 23);
+            this.ButtonOpen.TabIndex = 6;
+            this.ButtonOpen.Text = "Open";
+            this.ButtonOpen.UseVisualStyleBackColor = true;
+            this.ButtonOpen.Click += new System.EventHandler(this.ButtonOpen_Click);
             // 
             // label1
             // 
@@ -205,6 +205,7 @@
             // 
             // ButtonSaveLog
             // 
+            this.ButtonSaveLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ButtonSaveLog.Location = new System.Drawing.Point(476, 392);
             this.ButtonSaveLog.Name = "ButtonSaveLog";
             this.ButtonSaveLog.Size = new System.Drawing.Size(75, 23);
@@ -213,24 +214,24 @@
             this.ButtonSaveLog.UseVisualStyleBackColor = true;
             this.ButtonSaveLog.Click += new System.EventHandler(this.ButtonSaveLog_Click);
             // 
-            // IumericUpDownIterations
+            // NumericUpDownIterations
             // 
-            this.IumericUpDownIterations.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.IumericUpDownIterations.Location = new System.Drawing.Point(395, 111);
-            this.IumericUpDownIterations.Maximum = new decimal(new int[] {
+            this.NumericUpDownIterations.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.NumericUpDownIterations.Location = new System.Drawing.Point(395, 111);
+            this.NumericUpDownIterations.Maximum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.IumericUpDownIterations.Minimum = new decimal(new int[] {
+            this.NumericUpDownIterations.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.IumericUpDownIterations.Name = "IumericUpDownIterations";
-            this.IumericUpDownIterations.Size = new System.Drawing.Size(156, 20);
-            this.IumericUpDownIterations.TabIndex = 16;
-            this.IumericUpDownIterations.Value = new decimal(new int[] {
+            this.NumericUpDownIterations.Name = "NumericUpDownIterations";
+            this.NumericUpDownIterations.Size = new System.Drawing.Size(156, 20);
+            this.NumericUpDownIterations.TabIndex = 16;
+            this.NumericUpDownIterations.Value = new decimal(new int[] {
             1,
             0,
             0,
@@ -241,7 +242,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(567, 423);
-            this.Controls.Add(this.IumericUpDownIterations);
+            this.Controls.Add(this.NumericUpDownIterations);
             this.Controls.Add(this.ButtonSaveLog);
             this.Controls.Add(this.PanelStartSaveButtons);
             this.Controls.Add(this.TextBoxLog);
@@ -250,7 +251,7 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.ButtoOpen);
+            this.Controls.Add(this.ButtonOpen);
             this.Controls.Add(this.ButtonBrowse);
             this.Controls.Add(this.TextBoxInputFile);
             this.Controls.Add(this.ListBoxContent);
@@ -258,7 +259,7 @@
             this.Name = "Form1";
             this.Text = "Program #2";
             this.PanelStartSaveButtons.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.IumericUpDownIterations)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NumericUpDownIterations)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -271,7 +272,7 @@
         private System.Windows.Forms.ListBox ListBoxContent;
         private System.Windows.Forms.TextBox TextBoxInputFile;
         private System.Windows.Forms.Button ButtonBrowse;
-        private System.Windows.Forms.Button ButtoOpen;
+        private System.Windows.Forms.Button ButtonOpen;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
@@ -281,7 +282,7 @@
         private System.Windows.Forms.TextBox TextBoxLog;
         private System.Windows.Forms.Panel PanelStartSaveButtons;
         private System.Windows.Forms.Button ButtonSaveLog;
-        private System.Windows.Forms.NumericUpDown IumericUpDownIterations;
+        private System.Windows.Forms.NumericUpDown NumericUpDownIterations;
     }
 }
 

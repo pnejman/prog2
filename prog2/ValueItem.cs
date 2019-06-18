@@ -8,38 +8,38 @@ namespace prog2
 {
     class ValueItem
     {
-        public double a { get; set; }
-        public double b { get; set; }
+        public double A { get; set; }
+        public double B { get; set; }
 
         public ValueItem(double a, double b)
         {
-            this.a = a;
-            this.b = b;
+            this.A = a;
+            this.B = b;
         }
 
         public void Multiply()
         {
-            b = a * b;
+            B = A * B;
         }
 
         public void Divide()
         {
-            b = a / b;
+            B = A / B;
         }
 
         public void Power()
         {
-            b = Math.Pow(a, b);
+            B = Math.Pow(A, B);
         }
 
         public void Substract()
         {
-            b = a - b;
+            B = A - B;
         }
 
         public override string ToString()
         {
-            return $"a = {a}, b = {b}";
+            return $"a = {A}, b = {B}";
         }
     }
 }

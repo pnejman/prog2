@@ -13,32 +13,42 @@ namespace prog2
 {
     public partial class Form1 : Form
     {
-        DataFile DataFile;
-        private bool _fileLoaded = false; //consistency - howcome you have _ prefix?
+        private readonly string dataFileDialogFilter = "XML files (*.xml)|*.xml";
+        private readonly string dataFileDialogDefaultExt = "xml";
+        private readonly string logFileDialogFilter = "Text files (*.txt)|*.txt";
+        private readonly string logFileDialogDefaultExt = "txt";
+
+        private DataFile dataFile;
+        private bool fileLoaded = false; //consistency - howcome you have _ prefix?
         public bool FileLoaded {
-            get => _fileLoaded;
+            get => fileLoaded;
             set {
-                _fileLoaded = value;
+                fileLoaded = value;
                 dataFileBindingSource.ResetCurrentItem();
             }
         }
 
         //if you have fields which are only assigned once, make them readonly - this will make the intent more obvious and prevent from accidental breaking
-        Logger Logger = new Logger();
-        List<Operation> operations = new List<Operation>();
-        BindingSource dataFileBindingSource = new BindingSource();
+        private readonly Logger logger = new Logger();
+        private readonly BindingSource dataFileBindingSource = new BindingSource();
 
         public Form1()
         {
             InitializeComponent();
-            IumericUpDownIterations.Maximum = decimal.MaxValue;
+            NumericUpDownIterations.Maximum = decimal.MaxValue;
 
             //+1 point for making the friendly name of the calculation - however, this can be improved :)
-            operations.Add(new Operation(OperationType.Divide, "Dzielenie"));
-            operations.Add(new Operation(OperationType.Multiply, "Mnożenie"));
-            operations.Add(new Operation(OperationType.Power, "Potęgowanie"));
-            operations.Add(new Operation(OperationType.Substract, "Odejmowanie"));
+
+            List<KeyValuePair<OperationType, string>> operations = new List<KeyValuePair<OperationType, string>>();
+            Array values = Enum.GetValues(typeof(OperationType));
+
+            foreach (int val in values)
+            {
+                OperationType temp = (OperationType)val;
+                operations.Add(new KeyValuePair<OperationType, string>(temp, temp.GetLabel()));
+            }
             ComboBoxOperation.DataSource = operations;
+            ComboBoxOperation.DisplayMember = "Value";
 
             dataFileBindingSource.Add(this);
             PanelStartSaveButtons.DataBindings.Add("Enabled", dataFileBindingSource, "FileLoaded");
@@ -46,12 +56,12 @@ namespace prog2
 
         private void UpdateLog()
         {
-            if (Logger == null)
+            if (logger == null)
             {
                 return;
             }
 
-            TextBoxLog.Lines = Logger.Log.Where(li =>
+            TextBoxLog.Lines = logger.Log.Where(li =>
                 (CheckBoxShowEvents.Checked && li.ErrorLevel == ErrorLevel.Info) ||
                 (CheckBoxShowErrors.Checked && li.ErrorLevel == ErrorLevel.Error)
                 ).Select(li => li.ToString()).ToArray();
@@ -62,17 +72,17 @@ namespace prog2
 
         private void ButtonStart_Click(object sender, EventArgs e)
         {
-            decimal iterations = IumericUpDownIterations.Value;
-            for (int i = 0; i < DataFile.ValueItems.Count; i++)
+            decimal iterations = NumericUpDownIterations.Value;
+            for (int i = 0; i < dataFile.ValueItems.Count; i++)
             {
-                ValueItem vi = DataFile.ValueItems[i];
+                ValueItem vi = dataFile.ValueItems[i];
                 decimal iteration = iterations;
                 while (iteration-- > 0)
                 {
-                    Operation op = (ComboBoxOperation.SelectedItem as Operation);
+                    var op = (KeyValuePair<OperationType, string>)ComboBoxOperation.SelectedItem;
                     try
                     {
-                        switch (op.Type)
+                        switch (op.Key)
                         {
                             case OperationType.Multiply:
                                 vi.Multiply();
@@ -90,15 +100,15 @@ namespace prog2
                                 MessageBox.Show("Select operation");
                                 return;
                         }
-                        Logger.LogEvent($"Item {i + 1}, operation '{op.Label}', iteration {iterations - iteration}, result: {vi}");
+                        logger.LogEvent($"Item {i + 1}, operation '{op.Value}', iteration {iterations - iteration}, result: {vi}");
                     }
                     catch
                     {
-                        Logger.LogError($"Item {i + 1}, operation '{op.Label}', iteration {iterations - iteration} failed");
+                        logger.LogError($"Item {i + 1}, operation '{op.Value}', iteration {iterations - iteration} failed");
                     }
                 }
             }
-            DataFile.ValueItems.ResetBindings();
+            dataFile.ValueItems.ResetBindings();
             UpdateLog();
         }
 
@@ -106,9 +116,10 @@ namespace prog2
         {
             OpenFileDialog ofd = new OpenFileDialog
             {
-                Filter = "XML files (*.xml)|*.xml", //magic string should be rather replaced with a private readonly field (especially that it's used more than once)
+                Filter = dataFileDialogFilter, //magic string should be rather replaced with a private readonly field (especially that it's used more than once)
                 //if you add new supported extension, you need to change in two places
-                InitialDirectory = TextBoxInputFile.Text
+                InitialDirectory = TextBoxInputFile.Text,
+                DefaultExt = dataFileDialogDefaultExt
             };
 
             if (ofd.ShowDialog() == DialogResult.OK)
@@ -117,11 +128,12 @@ namespace prog2
             }
         }
 
-        private void ButtoOpen_Click(object sender, EventArgs e)
+        private void ButtonOpen_Click(object sender, EventArgs e)
         {
-            DataFile = new DataFile(TextBoxInputFile.Text, Logger);
-            FileLoaded = DataFile != null;
-            ListBoxContent.DataSource = DataFile.ValueItems;
+            dataFile = null;
+            dataFile = new DataFile(TextBoxInputFile.Text, logger);
+            FileLoaded = dataFile != null;
+            ListBoxContent.DataSource = dataFile.ValueItems;
             UpdateLog();
         }
 
@@ -129,15 +141,15 @@ namespace prog2
         {
             SaveFileDialog sfd = new SaveFileDialog()
             {
-                Filter = "XML files (*.xml)|*.xml",
-                InitialDirectory = Path.GetDirectoryName(DataFile.FilePath),
-                FileName = Path.GetFileNameWithoutExtension(DataFile.FilePath),
-                DefaultExt = "xml"
+                Filter = dataFileDialogFilter,
+                InitialDirectory = Path.GetDirectoryName(dataFile.FilePath),
+                FileName = Path.GetFileNameWithoutExtension(dataFile.FilePath),
+                DefaultExt = dataFileDialogDefaultExt
             };
 
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-                DataFile.SaveToFile(sfd.FileName);
+                dataFile.SaveToFile(sfd.FileName);
             }
             UpdateLog();
         }
@@ -154,26 +166,21 @@ namespace prog2
 
         private void ButtonSaveLog_Click(object sender, EventArgs e)
         {
-            try
+            SaveFileDialog sfd = new SaveFileDialog()
             {
-                SaveFileDialog sfd = new SaveFileDialog()
-                {
-                    Filter = "Text files (*.txt)|*.txt",
-                    InitialDirectory = DataFile.FilePath,
-                    DefaultExt = "txt"
-                };
+                Filter = logFileDialogFilter,
+                InitialDirectory = dataFile.FilePath,
+                DefaultExt = logFileDialogDefaultExt
+            };
 
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    File.WriteAllLines(sfd.FileName, Logger.Log.Where(li =>
-                        (CheckBoxShowEvents.Checked && li.ErrorLevel == ErrorLevel.Info) ||
-                        (CheckBoxShowErrors.Checked && li.ErrorLevel == ErrorLevel.Error)
-                        ).Select(li => li.ToString()).ToArray());
-                }
-            }
-            catch
+            if (sfd.ShowDialog() == DialogResult.OK)
             {
-                Logger.LogError("Error saving log file");
+                var logItems = logger.Log.Where(li =>
+                            (CheckBoxShowEvents.Checked && li.ErrorLevel == ErrorLevel.Info) ||
+                            (CheckBoxShowErrors.Checked && li.ErrorLevel == ErrorLevel.Error)
+                            ).Select(li => li.ToString());
+
+                logger.SaveLog(sfd.FileName, false, logItems);
             }
         }
     }

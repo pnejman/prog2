@@ -47,14 +47,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataFile.cs" />
+    <Compile Include="ErrorLevel.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="LogEntry.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Operation.cs" />
+    <Compile Include="OperationType.cs" />
+    <Compile Include="OperationTypeExtention.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValueItem.cs" />

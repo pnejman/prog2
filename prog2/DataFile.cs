@@ -15,18 +15,18 @@ namespace prog2
         public BindingList<ValueItem> ValueItems { get; private set; } = new BindingList<ValueItem>();
 
         //consistency & conventions - lower case for private instance fields
-        private XDocument doc;
-        private Logger Logger;
+        private readonly XDocument doc;
+        private readonly Logger logger;
 
         public DataFile(string path, Logger logger)
         {
             //for instance members, use 'this.' notation - it helps identify the statics
-            Logger = logger;
-            FilePath = path;
+            this.logger = logger;
+            this.FilePath = path;
 
             try
             {
-                Logger.LogEvent($"Loading data from {Path.GetFileName(FilePath)}");
+                logger.LogEvent($"Loading data from {Path.GetFileName(FilePath)}");
                 doc = XDocument.Load(FilePath);
                 foreach (var val in doc.Descendants("value"))
                 {
@@ -35,20 +35,33 @@ namespace prog2
                         ValueItem v = new ValueItem(int.Parse(val.Attribute("a").Value), int.Parse(val.Attribute("b").Value));
                         ValueItems.Add(v);
                     }
-                    catch
+                    catch (FormatException)
                     {
                         //in general, it is good to log *what* went wrong, not just 'where' (i.e. include exception details)
-                        Logger.LogError($"Error loading item {val}");
+                        logger.LogError($"Error loading item - non-number or empty value(s) in {val}");
                     }
+                    catch (ArgumentNullException)
+                    {
+                        logger.LogError($"Error loading item - missing value(s) in {val}");
+                    }
+                    
                 }
             }
-            catch
+            catch (System.Xml.XmlException ex)
             {
-                Logger.LogError($"Can't load data from {Path.GetFileName(FilePath)}");
+                logger.LogError($"Can't load data from {Path.GetFileName(FilePath)}, input file corrupted, line {ex.LineNumber}, column {ex.LinePosition}: {ex.Message}");
+            }
+            catch (ArgumentException)
+            {
+                logger.LogError($"Can't load data from {Path.GetFileName(FilePath)}, invalid path");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Can't load data from {Path.GetFileName(FilePath)}, unknown error ('{ex.Message}')");
             }
             finally
             {
-                Logger.LogEvent($"{ValueItems.Count()} items read");
+                logger.LogEvent($"{ValueItems.Count()} items read");
             }
         }
 
@@ -57,21 +70,21 @@ namespace prog2
             try
             {
                 string saveTo = path ?? FilePath;
-                Logger.LogEvent($"Saving data to {Path.GetFileName(saveTo)}");
+                logger.LogEvent($"Saving data to {Path.GetFileName(saveTo)}");
                 doc.Root.RemoveNodes();
                 foreach (ValueItem item in ValueItems)
                 {
                     XElement valueElement = new XElement("value");
-                    valueElement.SetAttributeValue("a", item.a);
-                    valueElement.SetAttributeValue("b", item.b);
+                    valueElement.SetAttributeValue("a", item.A);
+                    valueElement.SetAttributeValue("b", item.B);
                     doc.Root.Add(valueElement);
                 }
                 doc.Save(saveTo);
-                Logger.LogEvent($"{ValueItems.Count} items saved");
+                logger.LogEvent($"{ValueItems.Count} items saved");
             }
             catch
             {
-                Logger.LogError($"Can't save data to {Path.GetFileName(FilePath)}");
+                logger.LogError($"Can't save data to {Path.GetFileName(FilePath)}");
             }
         }
     }

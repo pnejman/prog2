@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,49 +12,52 @@ namespace prog2
     class Logger
     {
         public List<LogEntry> Log { get; private set; } = new List<LogEntry>();
+        private readonly string defaultLogPath;
+        private bool giveUp = false;
+
+        public Logger()
+        {
+            defaultLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "log.txt");
+        }
 
         public void LogEvent(string message)
         {
-            Log.Add(new LogEntry(ErrorLevel.Info, message));
+            AddEntry(new LogEntry(ErrorLevel.Info, message));
         }
 
         public void LogError(string message)
         {
-            Log.Add(new LogEntry(ErrorLevel.Error, message));
+            AddEntry(new LogEntry(ErrorLevel.Error, message));
         }
-    }
 
-
-    //in general, it is good to have one .cs file per class
-    class LogEntry
-    {
-        public ErrorLevel ErrorLevel { get; private set; }
-
-        private string _message;
-        public string Message
+        private void AddEntry(LogEntry logEntry)
         {
-            get { return this.ToString(); }
-            private set { _message = value; }
+            Log.Add(logEntry);
+            SaveLog(defaultLogPath, true, new string[] { logEntry.ToString() });
         }
-        private string Time;
 
-        public LogEntry(ErrorLevel errorLevel, string message)
+        public void SaveLog(string logFilePath, bool append, IEnumerable<string> logItems)
         {
-            Time = DateTime.Now.ToLongTimeString();
-            ErrorLevel = errorLevel;
-            Message = message;
+            try
+            {
+                giveUp = false;
+                if (append)
+                {
+                    File.AppendAllLines(logFilePath, logItems);
+                }
+                else
+                {
+                    File.WriteAllLines(logFilePath, logItems);
+                }
+            }
+            catch
+            {
+                if (!giveUp)
+                {
+                    LogError("Error saving log file");
+                }
+                giveUp = true;
+            }
         }
-
-        public override string ToString()
-        {
-            return $"{Time}: {_message}";
-        }
-    }
-
-    //same for enums, one file per class is welcome
-    enum ErrorLevel
-    {
-        Info,
-        Error
     }
 }

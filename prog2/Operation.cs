@@ -13,21 +13,13 @@ namespace prog2
 
         public Operation(OperationType type, string label) //the friendly name for label is a good idea, but it can be improved... and, after that improvement, it might turn out that the Operation class is not needed 
         {
-            Type = type;
-            Label = label;
+            this.Type = type;
+            this.Label = label;
         }
 
         public override string ToString()
         {
             return Label;
         }
-    }
-
-    enum OperationType
-    {
-        Multiply,
-        Divide,
-        Power,
-        Substract
     }
 }
