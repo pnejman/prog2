@@ -17,9 +17,8 @@ namespace prog2
         private readonly string dataFileDialogDefaultExt = "xml";
         private readonly string logFileDialogFilter = "Text files (*.txt)|*.txt";
         private readonly string logFileDialogDefaultExt = "txt";
-
         private DataFile dataFile;
-        private bool fileLoaded = false; //consistency - howcome you have _ prefix?
+        private bool fileLoaded = false; 
         public bool FileLoaded
         {
             get => fileLoaded;
@@ -30,9 +29,15 @@ namespace prog2
             }
         }
 
-        //if you have fields which are only assigned once, make them readonly - this will make the intent more obvious and prevent from accidental breaking
+        public string FileTypeFromForm //required to send values to other classes. Took 6h to make it finally work.
+        {
+            get { return this.FormatSelector.Text; }
+            set { this.FormatSelector.Text = value; }
+        }
+
         private readonly Logger logger = new Logger();
         private readonly BindingSource dataFileBindingSource = new BindingSource();
+
 
         public Form1()
         {
@@ -40,8 +45,6 @@ namespace prog2
             NumericUpDownIterations.Maximum = decimal.MaxValue;
 
             FormatSelector.SelectedIndex = 0;
-
-            //+1 point for making the friendly name of the calculation - however, this can be improved :)
 
             List<KeyValuePair<OperationType, string>> operations = new List<KeyValuePair<OperationType, string>>();
             Array values = Enum.GetValues(typeof(OperationType));
@@ -126,8 +129,7 @@ namespace prog2
         {
             OpenFileDialog ofd = new OpenFileDialog
             {
-                Filter = dataFileDialogFilter, //magic string should be rather replaced with a private readonly field (especially that it's used more than once)
-                //if you add new supported extension, you need to change in two places
+                Filter = dataFileDialogFilter, 
                 InitialDirectory = TextBoxInputFile.Text,
                 DefaultExt = dataFileDialogDefaultExt
             };

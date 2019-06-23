@@ -16,6 +16,8 @@ namespace prog2
         public string defaultErrorLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "error_log.txt");
         private bool giveUp = false;
 
+        public static Form1 import = new Form1(); //create a new instance of the whole Form1 class, just to import single value from single field.
+        
         public void LogEvent(string message)
         {
             AddEntry(new LogEntry(ErrorLevel.Info, message));
@@ -41,6 +43,11 @@ namespace prog2
 
         public void SaveLog(string logFilePath, bool append, IEnumerable<string> logItems)
         {
+            if (import.FileTypeFromForm == "TXT") //yay. can access Form1 fields. Finally.
+            {
+                MessageBox.Show("Txt");
+            }
+
             try
             {
                 giveUp = false;
