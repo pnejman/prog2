@@ -12,12 +12,14 @@ namespace prog2
     class Logger
     {
         public List<LogEntry> Log { get; private set; } = new List<LogEntry>();
-        private readonly string defaultLogPath;
+        //public string defaultLogPath;
+        public string defaultLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "log.txt");
+        public string defaultErrorLogPath;
         private bool giveUp = false;
 
         public Logger()
         {
-            defaultLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "log.txt");
+            //defaultLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "log.txt");
         }
 
         public void LogEvent(string message)

@@ -20,9 +20,11 @@ namespace prog2
 
         private DataFile dataFile;
         private bool fileLoaded = false; //consistency - howcome you have _ prefix?
-        public bool FileLoaded {
+        public bool FileLoaded
+        {
             get => fileLoaded;
-            set {
+            set
+            {
                 fileLoaded = value;
                 dataFileBindingSource.ResetCurrentItem();
             }
@@ -110,7 +112,7 @@ namespace prog2
                         }
                         logger.LogEvent($"Item {i + 1}, operation '{op.Value}', iteration {iterations - iteration}, result: {vi}");
                     }
-                    catch(Exception exept)
+                    catch (Exception exept)
                     {
                         logger.LogError($"Item {i + 1}, operation '{op.Value}', iteration {iterations - iteration} failed. {exept.Message}");
                     }
@@ -198,12 +200,20 @@ namespace prog2
             if (fbd_log.ShowDialog() == DialogResult.OK)
             {
                 TextBoxLogFile.Text = fbd_log.SelectedPath;
+                logger.defaultLogPath = Path.Combine(fbd_log.SelectedPath, "log.txt");
             }
         }
 
         private void ButtonOpenLog_Click(object sender, EventArgs e)
         {
-
+            try
+            {
+                System.Diagnostics.Process.Start(logger.defaultLogPath);
+            }
+            catch (Exception opening_log_error)
+            {
+                MessageBox.Show($"Error while opening file.\r\n{opening_log_error.Message}");
+            }
         }
 
         private void ButtonBrowseErrorLog_Click(object sender, EventArgs e)
@@ -212,12 +222,20 @@ namespace prog2
             if (fbd_errorlog.ShowDialog() == DialogResult.OK)
             {
                 TextBoxErrorLogFile.Text = fbd_errorlog.SelectedPath;
+                logger.defaultErrorLogPath = Path.Combine(fbd_errorlog.SelectedPath, "error_log.txt");
             }
         }
 
         private void ButtonOpenErrorLog_Click(object sender, EventArgs e)
         {
-
+            try
+            {
+                System.Diagnostics.Process.Start(logger.defaultErrorLogPath);
+            }
+            catch (Exception opening_log_error)
+            {
+                MessageBox.Show($"Error while opening file.\r\n{opening_log_error.Message}");
+            }
         }
     }
 }
