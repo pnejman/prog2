@@ -9,19 +9,12 @@ using System.Windows.Forms;
 
 namespace prog2
 {
-    //with a logger like that, if an app crashes during execution you get no data logged at all
     class Logger
     {
         public List<LogEntry> Log { get; private set; } = new List<LogEntry>();
-        //public string defaultLogPath;
         public string defaultLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "log.txt");
         public string defaultErrorLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "error_log.txt");
         private bool giveUp = false;
-
-        //public Logger()
-        //{
-        //    defaultLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "log.txt");
-        //}
 
         public void LogEvent(string message)
         {
@@ -36,11 +29,11 @@ namespace prog2
         private void AddEntry(LogEntry logEntry)
         {
             Log.Add(logEntry);
-            if(logEntry.ErrorLevel == ErrorLevel.Info)
+            if (logEntry.ErrorLevel == ErrorLevel.Info)
             {
                 SaveLog(defaultLogPath, true, new string[] { logEntry.ToString() });
             }
-            else
+            else if (logEntry.ErrorLevel == ErrorLevel.Error)
             {
                 SaveLog(defaultErrorLogPath, true, new string[] { logEntry.ToString() });
             }
