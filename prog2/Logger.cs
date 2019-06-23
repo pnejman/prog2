@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace prog2
 {
@@ -14,13 +15,13 @@ namespace prog2
         public List<LogEntry> Log { get; private set; } = new List<LogEntry>();
         //public string defaultLogPath;
         public string defaultLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "log.txt");
-        public string defaultErrorLogPath;
+        public string defaultErrorLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "error_log.txt");
         private bool giveUp = false;
 
-        public Logger()
-        {
-            //defaultLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "log.txt");
-        }
+        //public Logger()
+        //{
+        //    defaultLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "log.txt");
+        //}
 
         public void LogEvent(string message)
         {
@@ -35,7 +36,14 @@ namespace prog2
         private void AddEntry(LogEntry logEntry)
         {
             Log.Add(logEntry);
-            SaveLog(defaultLogPath, true, new string[] { logEntry.ToString() });
+            if(logEntry.ErrorLevel == ErrorLevel.Info)
+            {
+                SaveLog(defaultLogPath, true, new string[] { logEntry.ToString() });
+            }
+            else
+            {
+                SaveLog(defaultErrorLogPath, true, new string[] { logEntry.ToString() });
+            }
         }
 
         public void SaveLog(string logFilePath, bool append, IEnumerable<string> logItems)
