@@ -24,7 +24,14 @@ namespace prog2
 
         public void Divide()
         {
-            B = A / B;
+            if (B != 0)
+            {
+                B = A / B;
+            }
+            else
+            {
+                throw new DivideByZeroException();
+            }
         }
 
         public void Power()
@@ -35,6 +42,23 @@ namespace prog2
         public void Substract()
         {
             B = A - B;
+        }
+
+        public void Add()
+        {
+            B = A + B;
+        }
+
+        public void Modulo()
+        {
+            if (B != 0)
+            {
+                B = A % B;
+            }
+            else
+            {
+                throw new DivideByZeroException();
+            }
         }
 
         public override string ToString()

@@ -19,6 +19,12 @@ namespace prog2
         Power,
 
         [Description("Odejmowanie")]
-        Substract
+        Substract,
+
+        [Description("Dodawanie")]
+        Add,
+
+        [Description("Modulo")]
+        Modulo
     }
 }

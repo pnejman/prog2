@@ -37,6 +37,8 @@ namespace prog2
             InitializeComponent();
             NumericUpDownIterations.Maximum = decimal.MaxValue;
 
+            FormatSelector.SelectedIndex = 0;
+
             //+1 point for making the friendly name of the calculation - however, this can be improved :)
 
             List<KeyValuePair<OperationType, string>> operations = new List<KeyValuePair<OperationType, string>>();
@@ -96,15 +98,21 @@ namespace prog2
                             case OperationType.Substract:
                                 vi.Substract();
                                 break;
+                            case OperationType.Add:
+                                vi.Add();
+                                break;
+                            case OperationType.Modulo:
+                                vi.Modulo();
+                                break;
                             default:
                                 MessageBox.Show("Select operation");
                                 return;
                         }
                         logger.LogEvent($"Item {i + 1}, operation '{op.Value}', iteration {iterations - iteration}, result: {vi}");
                     }
-                    catch
+                    catch(Exception exept)
                     {
-                        logger.LogError($"Item {i + 1}, operation '{op.Value}', iteration {iterations - iteration} failed");
+                        logger.LogError($"Item {i + 1}, operation '{op.Value}', iteration {iterations - iteration} failed. {exept.Message}");
                     }
                 }
             }
@@ -182,6 +190,34 @@ namespace prog2
 
                 logger.SaveLog(sfd.FileName, false, logItems);
             }
+        }
+
+        private void ButtonBrowseLog_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fbd_log = new FolderBrowserDialog();
+            if (fbd_log.ShowDialog() == DialogResult.OK)
+            {
+                TextBoxLogFile.Text = fbd_log.SelectedPath;
+            }
+        }
+
+        private void ButtonOpenLog_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ButtonBrowseErrorLog_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fbd_errorlog = new FolderBrowserDialog();
+            if (fbd_errorlog.ShowDialog() == DialogResult.OK)
+            {
+                TextBoxErrorLogFile.Text = fbd_errorlog.SelectedPath;
+            }
+        }
+
+        private void ButtonOpenErrorLog_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
