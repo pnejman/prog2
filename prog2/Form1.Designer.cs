@@ -347,7 +347,6 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.FormatSelector);
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.ButtonOpenErrorLog);
             this.groupBox2.Controls.Add(this.label4);
@@ -356,6 +355,7 @@
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Controls.Add(this.ButtonOpenLog);
             this.groupBox2.Controls.Add(this.ButtonBrowseLog);
+            this.groupBox2.Controls.Add(this.FormatSelector);
             this.groupBox2.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.groupBox2.Location = new System.Drawing.Point(12, 226);
             this.groupBox2.Name = "groupBox2";

@@ -29,15 +29,8 @@ namespace prog2
             }
         }
 
-        public string FileTypeFromForm //required to send values to other classes. Took 6h to make it finally work.
-        {
-            get { return this.FormatSelector.Text; }
-            set { this.FormatSelector.Text = value; }
-        }
-
         private readonly Logger logger = new Logger();
         private readonly BindingSource dataFileBindingSource = new BindingSource();
-
 
         public Form1()
         {

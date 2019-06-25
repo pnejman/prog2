@@ -16,8 +16,8 @@ namespace prog2
         public string defaultErrorLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "error_log.txt");
         private bool giveUp = false;
 
-        public static Form1 import = new Form1(); //create a new instance of the whole Form1 class, just to import single value from single field.
-        
+        public string stringToSave;
+
         public void LogEvent(string message)
         {
             AddEntry(new LogEntry(ErrorLevel.Info, message));
@@ -30,24 +30,43 @@ namespace prog2
 
         private void AddEntry(LogEntry logEntry)
         {
+            string chosen_one = Application.OpenForms["Form1"].Controls["groupBox2"].Controls["FormatSelector"].Text; //it took 10h to find a way to get Form1 private values visible in another class
+
             Log.Add(logEntry);
+
+            switch (chosen_one)
+            {
+                case "TXT":
+                    stringToSave = logEntry.ToString();
+                    defaultLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "log.txt");
+                    defaultErrorLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "error_log.txt");
+                    break;
+
+                case "CSV":
+                    stringToSave = logEntry.ToCSV();
+                    defaultLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "log.csv");
+                    defaultErrorLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "error_log.csv");
+                    break;
+
+                case "TSV":
+                    stringToSave = logEntry.ToTSV();
+                    defaultLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "log.tsv");
+                    defaultErrorLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "error_log.tsv");
+                    break;
+            }
+
             if (logEntry.ErrorLevel == ErrorLevel.Info)
             {
-                SaveLog(defaultLogPath, true, new string[] { logEntry.ToString() });
+                SaveLog(defaultLogPath, true, new string[] { stringToSave });
             }
             else if (logEntry.ErrorLevel == ErrorLevel.Error)
             {
-                SaveLog(defaultErrorLogPath, true, new string[] { logEntry.ToString() });
+                SaveLog(defaultErrorLogPath, true, new string[] { stringToSave });
             }
         }
 
         public void SaveLog(string logFilePath, bool append, IEnumerable<string> logItems)
         {
-            if (import.FileTypeFromForm == "TXT") //yay. can access Form1 fields. Finally.
-            {
-                MessageBox.Show("Txt");
-            }
-
             try
             {
                 giveUp = false;

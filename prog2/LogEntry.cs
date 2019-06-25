@@ -30,5 +30,15 @@ namespace prog2
         {
             return $"{time}: ({(ErrorLevel == ErrorLevel.Error ? "E" : "I")})  {message}";
         }
+
+        public string ToCSV()
+        {
+            return $"{time},{(ErrorLevel == ErrorLevel.Error ? "E" : "I")},\"{message}\"";
+        }
+
+        public string ToTSV()
+        {
+            return $"{time}\t{(ErrorLevel == ErrorLevel.Error ? "E" : "I")}\t\"{message}\"";
+        }
     }
 }
