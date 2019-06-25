@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace prog2
 {
@@ -15,6 +16,11 @@ namespace prog2
         public string defaultLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "log.txt");
         public string defaultErrorLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "error_log.txt");
         private bool giveUp = false;
+
+        public string ChosenOne()
+        {
+            return Application.OpenForms["Form1"].Controls["groupBox2"].Controls["FormatSelector"].Text; //it took 10h to find a way to get Form1 private values visible in another class
+        }
 
         public string stringToSave;
 
@@ -30,11 +36,9 @@ namespace prog2
 
         private void AddEntry(LogEntry logEntry)
         {
-            string chosen_one = Application.OpenForms["Form1"].Controls["groupBox2"].Controls["FormatSelector"].Text; //it took 10h to find a way to get Form1 private values visible in another class
-
             Log.Add(logEntry);
 
-            switch (chosen_one)
+            switch (ChosenOne())
             {
                 case "TXT":
                     stringToSave = logEntry.ToString();
@@ -53,40 +57,70 @@ namespace prog2
                     defaultLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "log.tsv");
                     defaultErrorLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "error_log.tsv");
                     break;
+
+                case "XML":
+                    defaultLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "log.xml");
+                    defaultErrorLogPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "error_log.xml");
+                    break;
             }
 
             if (logEntry.ErrorLevel == ErrorLevel.Info)
             {
-                SaveLog(defaultLogPath, true, new string[] { stringToSave });
+                SaveLog(defaultLogPath, true, new string[] { stringToSave }, logEntry);
             }
             else if (logEntry.ErrorLevel == ErrorLevel.Error)
             {
-                SaveLog(defaultErrorLogPath, true, new string[] { stringToSave });
+                SaveLog(defaultErrorLogPath, true, new string[] { stringToSave }, logEntry);
             }
         }
 
-        public void SaveLog(string logFilePath, bool append, IEnumerable<string> logItems)
+        public void SaveLog(string logFilePath, bool append, IEnumerable<string> logItems, LogEntry logEntry)
         {
-            try
+            if (ChosenOne() == "XML")
             {
-                giveUp = false;
-                if (append)
+                XDocument previousLog = new XDocument();
+
+                if (File.Exists(logFilePath))
                 {
-                    File.AppendAllLines(logFilePath, logItems);
+                    previousLog = XDocument.Load(logFilePath);
                 }
                 else
                 {
-                    File.WriteAllLines(logFilePath, logItems);
+                    previousLog.Add(new XElement("log",""));
                 }
+                XElement thingsToAdd = new XElement("entry", 
+                                            new XElement("time", DateTime.Now.ToLongTimeString()),
+                                            new XElement("errorlevel", logEntry.ErrorLevel),
+                                            new XElement("msg", logEntry.message));
+                previousLog.Root.Add(thingsToAdd);
+                previousLog.Save(logFilePath);
             }
-            catch
+
+            else
             {
-                if (!giveUp)
+                try
                 {
-                    LogError("Error saving log file");
+                    giveUp = false;
+                    if (append)
+                    {
+                        File.AppendAllLines(logFilePath, logItems);
+                    }
+                    else
+                    {
+                        File.WriteAllLines(logFilePath, logItems);
+                    }
                 }
-                giveUp = true;
+                catch
+                {
+                    if (!giveUp)
+                    {
+                        LogError("Error saving log file");
+                    }
+                    giveUp = true;
+                }
             }
+
+
         }
     }
 }

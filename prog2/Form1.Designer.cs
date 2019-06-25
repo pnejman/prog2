@@ -225,12 +225,14 @@
             // ButtonSaveLog
             // 
             this.ButtonSaveLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ButtonSaveLog.Enabled = false;
             this.ButtonSaveLog.Location = new System.Drawing.Point(452, 343);
             this.ButtonSaveLog.Name = "ButtonSaveLog";
             this.ButtonSaveLog.Size = new System.Drawing.Size(75, 23);
             this.ButtonSaveLog.TabIndex = 15;
             this.ButtonSaveLog.Text = "Save log...";
             this.ButtonSaveLog.UseVisualStyleBackColor = true;
+            this.ButtonSaveLog.Visible = false;
             this.ButtonSaveLog.Click += new System.EventHandler(this.ButtonSaveLog_Click);
             // 
             // NumericUpDownIterations

@@ -185,7 +185,7 @@ namespace prog2
                             (CheckBoxShowErrors.Checked && li.ErrorLevel == ErrorLevel.Error)
                             ).Select(li => li.ToString());
 
-                logger.SaveLog(sfd.FileName, false, logItems);
+                logger.SaveLog(sfd.FileName, false, logItems, null);
             }
         }
 

@@ -11,7 +11,7 @@ namespace prog2
     {
         public ErrorLevel ErrorLevel { get; private set; }
 
-        private readonly string message;
+        public readonly string message;
         public string Message
         {
             get { return this.ToString(); }
@@ -39,6 +39,11 @@ namespace prog2
         public string ToTSV()
         {
             return $"{time}\t{(ErrorLevel == ErrorLevel.Error ? "E" : "I")}\t\"{message}\"";
+        }
+
+        public string CleanMessage()
+        {
+            return this.message;
         }
     }
 }
