@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Globalization;
 
 namespace prog2
 {
@@ -32,7 +33,8 @@ namespace prog2
                 {
                     try
                     {
-                        ValueItem v = new ValueItem(int.Parse(val.Attribute("a").Value), int.Parse(val.Attribute("b").Value));
+                        ValueItem v = new ValueItem(Convert.ToDouble(val.Attribute("numberA").Value, CultureInfo.InvariantCulture), Convert.ToDouble(val.Attribute("numberB").Value, CultureInfo.InvariantCulture));
+                        //CultureInfo.InvariantCulture parses imported double numbers to correct Culture. Both commas and periods will be converted to commas.
                         ValueItems.Add(v);
                     }
                     catch (FormatException)
@@ -43,6 +45,28 @@ namespace prog2
                     catch (ArgumentNullException)
                     {
                         logger.LogError($"Error loading item - missing value(s) in {val}");
+                    }
+                    catch
+                    {
+                        logger.LogError($"Error loading item - invalid parameters names in {val}. Searching by secondary naming pattern...");
+                        try
+                        {
+                            ValueItem v = new ValueItem(Convert.ToDouble(val.Attribute("first").Value, CultureInfo.InvariantCulture), Convert.ToDouble(val.Attribute("second").Value, CultureInfo.InvariantCulture));
+                            ValueItems.Add(v);
+                        }
+                        catch
+                        {
+                            logger.LogError($"Error. Secondary search failed. Searching by tetriary naming pattern...");
+                            try
+                            {
+                                ValueItem v = new ValueItem(Convert.ToDouble(val.Element("first").Value, CultureInfo.InvariantCulture), Convert.ToDouble(val.Element("second").Value, CultureInfo.InvariantCulture));
+                                ValueItems.Add(v);
+                            }
+                            catch
+                            {
+                                logger.LogError($"Error. Tetriary search failed. Record ommited.");
+                            }
+                        }
                     }
                     
                 }
